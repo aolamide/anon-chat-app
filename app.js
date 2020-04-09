@@ -145,10 +145,10 @@ app.post('/game', (req, res) => {
 app.post('/join', (req, res) => {
     const { code : id, username } = req.body;
     Game.findOne({id}, (err, game) => {
+        if(err || !game) return res.json({error : 'Error. Pin may be incorrect.'});
         let roomUsers = getRoomUsers(game.id);
         let nameExists = roomUsers.find(user => user.username.toLowerCase() === username.toLowerCase());
-        if(err || !game) return res.json({error : 'Error. Pin may be incorrect.'})
-        else if(moment().isAfter(new Date(game.startTime).toISOString())) return res.json({error : 'Game has closed for entries'})
+        if(moment().isAfter(new Date(game.startTime).toISOString())) return res.json({error : 'Game has closed for entries'})
         else if(roomUsers.length >= game.maxUsers) return res.json({error : 'Game is full'});
         else if(nameExists) return res.json({error : 'Username is taken, choose another'});
         else {
