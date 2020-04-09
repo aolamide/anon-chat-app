@@ -68,7 +68,7 @@ const allowEntry = ( startTime ) => {
             //when a user is removed
             socket.on('removal', data => {
                 if(moment().isBefore(Date.parse(startTime))){
-                    return socket.emit('rejectRemoval', 'It is not time to remove yet, be warned');
+                    return socket.emit('rejectRemoval', 'It is not time to remove yet, be warned!');
                 }
                 let { userToRemove } = data;
                 const user = getCurrentUser(socket.id);
@@ -121,8 +121,8 @@ app.get('/create', (req, res) => {
 
 app.post('/game', (req, res) => {
     let { startTime, name, maxUsers } = req.body;
-    if(moment().isAfter(Date.parse(startTime))) return res.json('Please enter a future date');
-    if (moment(startTime).isValid() && Number(maxUsers) && name.trim()) {
+    if(moment().isAfter(Date.parse(startTime))) return res.json('Please enter a future date')
+    else if (moment(startTime).isValid() && Number(maxUsers) && name.trim()) {
     Game.findOne({name}, async (err, game) => {
             if(game) return res.json('Game name already exists');
             startTime = await moment(startTime).format('LLLL');
@@ -140,8 +140,8 @@ app.post('/game', (req, res) => {
     }
     else return res.json('Error, please fill all fields with correct format');
 });
-console.log(moment().isAfter(Date.now() - 1000));
-//Endpoint to add 
+
+//Endpoint to join game
 app.post('/join', (req, res) => {
     const { code : id, username } = req.body;
     Game.findOne({id}, (err, game) => {
