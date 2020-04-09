@@ -46,14 +46,14 @@ window.onload = function () {
         else {
             chatLoader.style.display = 'none'
             chatContainer.style.display = 'block'
-            initSocket(response.id)
+            initSocket(response.id, response.roomName)
         }
     });
 }
 
 let socket = '';
 
-function initSocket(room) {
+function initSocket(room, roomName) {
     socket = io();
 
     //Join chat room
@@ -61,7 +61,7 @@ function initSocket(room) {
 
     //Get room and users
     socket.on('roomUsers', ({ room ,users }) => {
-        outputRoomName(room);
+        outputRoomName(roomName);
         outputUsers(users);
     });
 

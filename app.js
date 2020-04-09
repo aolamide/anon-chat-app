@@ -68,7 +68,7 @@ const allowEntry = ( startTime ) => {
             //when a user is removed
             socket.on('removal', data => {
                 const now = moment();
-                const removalTime = moment(startTime);
+                const removalTime = moment(new Date(startTime).toISOString());
                 if(now.diff(removalTime) <  0){
                     return socket.emit('rejectRemoval', 'It is not time to remove yet, be warned!');
                 }
@@ -102,7 +102,7 @@ const allowEntry = ( startTime ) => {
                 const user = userLeave(socket.id);
         
                 if(user) {
-                    io.to(user.room).emit('adminMessage', `${user.username} has left the chat`);
+                    io.to(user.room).emit('adminMessage', `${user.username} has left the game`);
         
                     //Send users and room info
                     io.to(user.room).emit('roomUsers', {
@@ -123,15 +123,12 @@ app.get('/create', (req, res) => {
 
 app.post('/game', (req, res) => {
     let { startTime, name, maxUsers } = req.body;
-    // const now = moment();
-    // const gameTime = moment(startTime);
-    const now = Date.now();
-    const gameTime = Date.parse(startTime);
-    console.log(gameTime - now);
-    if((gameTime - now) <= (1000 * 60 * 5)) {
+    const now = moment();
+    const gameTime = moment(startTime);
+    if((gameTime.diff(now)) <= (1000 * 60 * 5)) {
         return res.json('Please enter a future date greater than 5minutes from now');
     }
-    else if (moment(startTime).isValid() && Number(maxUsers) && name.trim() && (gameTime - now) <= 300000) {
+    else if (moment(startTime).isValid() && Number(maxUsers) && name.trim()) {
     Game.findOne({name}, (err, game) => {
             if(game) return res.json('Game name already exists');
             startTime = moment(startTime).format('LLLL');
@@ -158,17 +155,16 @@ app.post('/join', (req, res) => {
         let roomUsers = getRoomUsers(game.id);
         let nameExists = roomUsers.find(user => user.username.toLowerCase() === username.toLowerCase());
         const now = moment();
-        const gameStart = moment(game.startTime);
+        const gameStart = moment(new Date(game.startTime).toISOString());
         if(now.diff(gameStart) >= 0) return res.json({error : 'Game has closed for entries'})
         else if(roomUsers.length >= game.maxUsers) return res.json({error : 'Game is full'});
         else if(nameExists) return res.json({error : 'Username is taken, choose another'});
         else {
             allowEntry(game.startTime);
-            return res.json({id : game.id});
+            return res.json({id : game.id, roomName : game.name});
         }
     });
 });
 
-// Game.findOneAndUpdate({id : '8618310050'}, {startTime : 'Thursday, April 9, 2020 12:03 PM'}, (err, res)=> console.log(res));
 
 server.listen(process.env.PORT || 3000, () => console.log('Server started'));

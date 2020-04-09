@@ -1,9 +1,9 @@
 @import url('https:////fonts.googleapis.com/css?family=Josefin+Sans');
 
 :root {
-	--dark-color-a: #667aff;
-	--dark-color-b: #7386ff;
-	--light-color: #e6e9ff;
+	--dark-color-a: #009A31;
+	--dark-color-b:  #84CF96;
+	--light-color:  #C6E7CE;
 	--success-color: #5cb85c;
 	--error-color: #d9534f;
 }
@@ -37,7 +37,9 @@ a {
 	border: 0;
 	font-size: 17px;
 }
-
+.center {
+	text-align: center;
+}
 /* Chat Page */
 .chat-loader {
 	width: 100%;
@@ -107,7 +109,7 @@ a {
 .chat-messages .message .meta {
 	font-size: 15px;
 	font-weight: bold;
-	color: var(--dark-color-b);
+	color: var(--dark-color-a);
 	opacity: 0.7;
 	margin-bottom: 7px;
 }
@@ -229,6 +231,15 @@ a {
 	margin-top: 12px;
 	text-align: center;
 	color : var(--success-color);
+}
+#or {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+#linkCreate {
+	opacity : 0.8;
+	color: white;
+	margin-bottom: 0;
 }
 @media (max-width: 700px) {
 	.join-container{
