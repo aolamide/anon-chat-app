@@ -67,7 +67,9 @@ const allowEntry = ( startTime ) => {
 
             //when a user is removed
             socket.on('removal', data => {
-                if(moment().isBefore(new Date(startTime).toISOString())){
+                const date = new Date(startTime)
+                const gameDate = date.getTime() - date.getTimezoneOffset() * 60000;
+                if(moment().isBefore(new Date(gameDate).toISOString())){
                     return socket.emit('rejectRemoval', 'It is not time to remove yet, be warned');
                 }
                 let { userToRemove } = data;
@@ -121,7 +123,9 @@ app.get('/create', (req, res) => {
 
 app.post('/game', (req, res) => {
     let { startTime, name, maxUsers } = req.body;
-    if(moment().isAfter(startTime)) return res.json('Please enter a future date');
+    const date = new Date(startTime);
+    const gameDate = date.getTime() - date.getTimezoneOffset() * 60000;
+    if(moment().isAfter(gameDate)) return res.json('Please enter a future date');
     if (moment(startTime).isValid() && Number(maxUsers) && name.trim()) {
     Game.findOne({name}, async (err, game) => {
             if(game) return res.json('Game name already exists');
@@ -148,7 +152,9 @@ app.post('/join', (req, res) => {
         if(err || !game) return res.json({error : 'Error. Pin may be incorrect.'});
         let roomUsers = getRoomUsers(game.id);
         let nameExists = roomUsers.find(user => user.username.toLowerCase() === username.toLowerCase());
-        if(moment().isAfter(new Date(game.startTime).toISOString())) return res.json({error : 'Game has closed for entries'})
+        const date = new Date(game.startTime)
+        const gameDate = date.getTime() - date.getTimezoneOffset() * 60000;
+        if(moment().isAfter(new Date(gameDate).toISOString())) return res.json({error : 'Game has closed for entries'})
         else if(roomUsers.length >= game.maxUsers) return res.json({error : 'Game is full'});
         else if(nameExists) return res.json({error : 'Username is taken, choose another'});
         else {
