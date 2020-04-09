@@ -1,9 +1,6 @@
 {
   "name": "last-man-standing",
   "version": "0.0.1",
-  "engines" : {
-    "node" : "12.16.2"
-  },
   "description": "Last man standing game",
   "main": "app.js",
   "scripts": {
