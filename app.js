@@ -127,12 +127,14 @@ app.post('/game', (req, res) => {
     // const gameTime = moment(startTime);
     const now = Date.now();
     const gameTime = Date.parse(startTime);
-    if((gameTime - now) <= (1000 * 60 * 5)) return res.json('Please enter a future date greater than 5minutes from now')
+    if((gameTime - now) <= (1000 * 60 * 5)) {
+        return res.json('Please enter a future date greater than 5minutes from now');
+    }
     else if (moment(startTime).isValid() && Number(maxUsers) && name.trim() && (gameTime - now) <= 300000) {
-    Game.findOne({name}, async (err, game) => {
+    Game.findOne({name}, (err, game) => {
             if(game) return res.json('Game name already exists');
-            startTime = await moment(startTime).format('LLLL');
-            maxUsers = await Number(maxUsers);
+            startTime = moment(startTime).format('LLLL');
+            maxUsers = Number(maxUsers);
             const newGame = new Game({name, startTime, maxUsers});
             newGame.save((err, saved) => {
                 if(err || !saved) return res.json('Error creating game');
