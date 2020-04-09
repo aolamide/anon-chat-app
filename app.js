@@ -33,7 +33,7 @@ const io = require('socket.io')(server);
 
 const { userJoin, getCurrentUser, userLeave, getRoomUsers, isRemoved, removeUser } = require('./utils/users');
 
-const allowEntry = ( startTime ) => {
+const allowEntry = startTime => {
     //Run when a client connects 
     if(io.sockets._events === undefined) {
         io.on('connection', socket => {
@@ -42,7 +42,7 @@ const allowEntry = ( startTime ) => {
                 socket.join(user.room);
         
                 //Welcome current user
-                socket.emit('welcomeMessage', ['Welcome to Last Man Standing', 'You can start removing fellow players from ' + startTime,  'Click on the icon beside a member\'s name to remove them', 'If you try to remove anyone before the time above, it won\'t work and you could be disqualified' , 'If you\'re on mobile, click the purple menu icon at the side of the screen to open the member list', 'Once you\'re removed, you would still be in the game to see how it ends but would not be able to send messages or remove anyone still in the game', 'Leggo, may the best win!!!']);
+                socket.emit('welcomeMessage', ['Welcome to Last Man Standing', 'You can start removing fellow players from ' + startTime,  'Click on the icon beside a member\'s name to remove them', 'If you try to remove anyone before the time above, it won\'t work and you could be disqualified' , 'If you\'re on mobile, click the green menu icon at the left side of the screen to open the member list', 'Once you\'re removed, you would still be in the game to see how it ends but would not be able to send messages or remove anyone still in the game', 'Leggo, may the best win!!!']);
         
                 //Broadcast when a user connects
                 socket.broadcast.to(user.room).emit('adminMessage',`${user.username} has joined the chat`);
@@ -80,7 +80,7 @@ const allowEntry = ( startTime ) => {
                 if(userToRemove == socket.id) {
                     return socket.emit('adminMessage', 'Why are you trying to remove yourself?');
                 }
-                else if(!a && !b) {
+                else if(!a && !b && user && removingUser) {
                     removeUser(userToRemove);
 
                     io.to(user.room).emit('adminMessage', `${user.username} removed ${removingUser.username}`);
@@ -160,6 +160,7 @@ app.post('/join', (req, res) => {
         else if(roomUsers.length >= game.maxUsers) return res.json({error : 'Game is full'});
         else if(nameExists) return res.json({error : 'Username is taken, choose another'});
         else {
+            console.log(game.startTime);
             allowEntry(game.startTime);
             return res.json({id : game.id, roomName : game.name});
         }
