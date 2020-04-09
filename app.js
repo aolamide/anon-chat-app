@@ -6,7 +6,7 @@ const formatMessage = require('./utils/messages');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 
-dotenv.config()
+dotenv.config();
 
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/lms';
 
@@ -32,9 +32,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 const io = require('socket.io')(server);
 
 const { userJoin, getCurrentUser, userLeave, getRoomUsers, isRemoved, removeUser } = require('./utils/users');
-const botName = 'Admin';
 
-const allowEntry = ({ startTime }) => {
+const allowEntry = ( startTime ) => {
     //Run when a client connects 
     if(io.sockets._events === undefined) {
         io.on('connection', socket => {
@@ -77,7 +76,7 @@ const allowEntry = ({ startTime }) => {
                 const a = isRemoved(socket.id);
                 const b = isRemoved(userToRemove);
                 if(userToRemove == socket.id) {
-                    return socket.emit('adminMessage', 'Why are you trying to reomve yourself?');
+                    return socket.emit('adminMessage', 'Why are you trying to remove yourself?');
                 }
                 else if(!a && !b) {
                     removeUser(userToRemove);
@@ -146,16 +145,19 @@ app.post('/game', (req, res) => {
 app.post('/join', (req, res) => {
     const { code : id, username } = req.body;
     Game.findOne({id}, (err, game) => {
-        if(err || !game) return res.json({error : 'Error. Pin may be incorrect.'})
-        if(moment().isAfter(new Date(game.startTime).toISOString())) return res.json({error : 'Game has closed for entries'})
         let roomUsers = getRoomUsers(game.id);
-        if(roomUsers.length >= game.maxUsers) return res.json({error : 'Room is full'});
-        let nameExists = roomUsers.find(user => user.username === username);
-        if(nameExists) return res.json({error : 'Username is taken, choose another'});
-        allowEntry({startTime : game.startTime});
-        return res.json({name : game.name});
+        let nameExists = roomUsers.find(user => user.username.toLowerCase() === username.toLowerCase());
+        if(err || !game) return res.json({error : 'Error. Pin may be incorrect.'})
+        else if(moment().isAfter(new Date(game.startTime).toISOString())) return res.json({error : 'Game has closed for entries'})
+        else if(roomUsers.length >= game.maxUsers) return res.json({error : 'Game is full'});
+        else if(nameExists) return res.json({error : 'Username is taken, choose another'});
+        else {
+            allowEntry(game.startTime);
+            return res.json({id : game.id});
+        }
     });
 });
 
+// Game.findOneAndUpdate({id : '8618310050'}, {startTime : 'Thursday, April 9, 2020 12:03 PM'}, (err, res)=> console.log(res));
 
 server.listen(process.env.PORT || 3000, () => console.log('Server started'));

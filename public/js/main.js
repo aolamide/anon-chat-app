@@ -46,7 +46,7 @@ window.onload = function () {
         else {
             chatLoader.style.display = 'none'
             chatContainer.style.display = 'block'
-            initSocket(response.name)
+            initSocket(response.id)
         }
     });
 }
