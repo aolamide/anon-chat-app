@@ -1,14 +1,14 @@
 {
-  "name": "socket",
-  "version": "1.0.0",
+  "name": "last-man-standing",
+  "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "start": "node app",
     "dev": "nodemon app"
   },
   "keywords": [],
-  "author": "",
+  "author": "Olamide Aboyeji",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",
