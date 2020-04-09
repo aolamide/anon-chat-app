@@ -241,6 +241,15 @@ a {
 	color: white;
 	margin-bottom: 0;
 }
+.creator {
+	position: fixed;
+	bottom : 10px;
+	width: 100%;
+	text-align: center;
+}
+.creator a {
+	color : var(--dark-color-b);
+}
 @media (max-width: 700px) {
 	.join-container{
 		width: 80vw
