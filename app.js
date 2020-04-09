@@ -128,7 +128,7 @@ app.post('/game', (req, res) => {
     const now = Date.now();
     const gameTime = Date.parse(startTime);
     if((gameTime - now) <= (1000 * 60 * 5)) return res.json('Please enter a future date greater than 5minutes from now')
-    else if (moment(startTime).isValid() && Number(maxUsers) && name.trim()) {
+    else if (moment(startTime).isValid() && Number(maxUsers) && name.trim() && (gameTime - now) <= 300000) {
     Game.findOne({name}, async (err, game) => {
             if(game) return res.json('Game name already exists');
             startTime = await moment(startTime).format('LLLL');
