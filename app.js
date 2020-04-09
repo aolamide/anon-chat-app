@@ -127,6 +127,7 @@ app.post('/game', (req, res) => {
     // const gameTime = moment(startTime);
     const now = Date.now();
     const gameTime = Date.parse(startTime);
+    console.log(gameTime - now);
     if((gameTime - now) <= (1000 * 60 * 5)) {
         return res.json('Please enter a future date greater than 5minutes from now');
     }
