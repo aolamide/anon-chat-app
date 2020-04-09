@@ -4,7 +4,7 @@
   "engines" : {
     "node" : "12.16.2"
   },
-  "description": "",
+  "description": "Last man standing game",
   "main": "app.js",
   "scripts": {
     "start": "node app",
