@@ -121,7 +121,7 @@ app.get('/create', (req, res) => {
 
 app.post('/game', (req, res) => {
     let { startTime, name, maxUsers } = req.body;
-    if(moment.isAfter(Date.parse(startTime))) return res.json('Please enter a future date');
+    if(moment().isAfter(Date.parse(startTime))) return res.json('Please enter a future date');
     if (moment(startTime).isValid() && Number(maxUsers) && name.trim()) {
     Game.findOne({name}, async (err, game) => {
             if(game) return res.json('Game name already exists');
