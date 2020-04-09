@@ -125,7 +125,6 @@ app.post('/game', (req, res) => {
     let { startTime, name, maxUsers } = req.body;
     const now = moment();
     const gameTime = moment(startTime);
-    console.log(now, gameTime);
     if(now.diff(gameTime) >= 0) return res.json('Please enter a future date')
     else if (moment(startTime).isValid() && Number(maxUsers) && name.trim()) {
     Game.findOne({name}, async (err, game) => {

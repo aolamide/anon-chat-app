@@ -2,7 +2,7 @@
   "name": "last-man-standing",
   "version": "0.0.1",
   "engines" : {
-    "node" : "10.15.0"
+    "node" : "12.16.2"
   },
   "description": "",
   "main": "app.js",
