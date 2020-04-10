@@ -2,10 +2,12 @@
 const createForm = document.querySelector('form');
 const errorBox = document.querySelector('.error');
 const successBox = document.querySelector('.success');
+const submitButton = document.querySelector('.btn');
 
 
 createForm.addEventListener('submit', e => {
     e.preventDefault();
+    submitButton.disabled = true;
     successBox.innerHTML = '';
     errorBox.innerHTML = ''
     const { gameName, maxUsers, gameStart } = e.target.elements;
@@ -30,6 +32,7 @@ createForm.addEventListener('submit', e => {
             displaySuccess(result);
             createForm.reset();
         }
+        submitButton.disabled = false;
     })
 })
 

@@ -19,6 +19,7 @@ body {
 	font-size: 16px;
 	background: var(--light-color);
 	margin: 20px;
+	min-height: 80vh
 }
 
 ul {
@@ -28,7 +29,9 @@ ul {
 a {
 	text-decoration: none;
 }
-
+button:disabled {
+	cursor: not-allowed;
+}
 .btn {
 	cursor: pointer;
 	padding: 5px 15px;
@@ -265,7 +268,7 @@ a {
 	}
 	.chat-main {
 		display: block;
-		height : calc(100vh - 90px);
+		height : calc(100vh - 120px);
 		overflow : hidden;
 	}
 	.chat-messages {
