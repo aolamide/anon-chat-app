@@ -41,7 +41,7 @@ window.onload = function () {
     .then(response => {
         if(response.error){
             alert(response.error);
-            window.location.href = '/';
+            window.location.href = `/join?code=${code}`;
         }
         else {
             chatLoader.style.display = 'none'
@@ -53,14 +53,14 @@ window.onload = function () {
 
 let socket = '';
 
-function initSocket(room, roomName, startTime) {
+function initSocket(room, roomName) {
     socket = io();
 
     //Join chat room
-    socket.emit('joinRoom', {username, room, startTime});
+    socket.emit('joinRoom', { username, room });
 
     //Get room and users
-    socket.on('roomUsers', ({ room ,users }) => {
+    socket.on('roomUsers', ({ users }) => {
         outputRoomName(roomName);
         outputUsers(users);
     });
@@ -77,22 +77,6 @@ function initSocket(room, roomName, startTime) {
 
     socket.on('adminMessage', message => {
         outputAdminMessage(message);
-    })
-
-    //rejectRemoval
-    socket.on('rejectRemoval', msg => {
-        alert(msg);
-        outputAdminMessage(msg);
-    })
-
-    //when you are removed
-    socket.on('removedYou', msg => {
-        outputAdminMessage(msg);
-        alert(msg);
-    })
-
-    socket.on('removalError', msg => {
-        alert(msg);
     })
 
     //Message submit
@@ -142,15 +126,6 @@ function outputRoomName(room) {
 //Add users to DOM
 function outputUsers(users) {
     userList.innerHTML = `
-        ${users.map(user => `<li>${user.username}<button id=${user.id} name=${user.username} class='btn-remove fas fa-user-times'></button></li>`).join('')}
+        ${users.map(user => `<li>${user.username}</li>`).join('')}
     `;
-    document.querySelectorAll('.fa-user-times').forEach(deletBtn => {
-        deletBtn.addEventListener('click', e => {
-            const id = e.target.getAttribute('id');
-            const name = e.target.getAttribute('name');
-            if(confirm(`Are you sure you want to remove ${name}?`)) {
-               socket.emit('removal', {userToRemove : id}); 
-            }
-        });
-    });
 }

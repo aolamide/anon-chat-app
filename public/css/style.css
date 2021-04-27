@@ -160,7 +160,9 @@ button:disabled {
 	border-top-left-radius: 5px;
 	border-top-right-radius: 5px;
 }
-
+.join-header a {
+	color : white
+}
 .join-main {
 	padding: 30px 40px;
 	background: var(--dark-color-b);
@@ -195,6 +197,8 @@ button:disabled {
 
 .join-main .btn {
 	margin-top: 20px;
+	margin-bottom: 10px;
+	padding: 10px;
 	width: 100%;
 }
 
@@ -214,13 +218,6 @@ button:disabled {
 .sideToggler i {
 	color : white;
 }
-.btn-remove {
-	margin-left : 10px;
-}
-.fa-user-times {
-	font-size: 22px;
-	color : red;
-}
 .error {
 	color : var(--error-color);
 	font-weight: bold;
@@ -229,6 +226,11 @@ button:disabled {
 }
 .bold {
 	font-weight: bold;
+}
+.gameCode {
+	font-weight: bold;
+	font-size: 24px;
+	letter-spacing: 3px;
 }
 .success {
 	margin-top: 12px;
@@ -251,7 +253,14 @@ button:disabled {
 	text-align: center;
 }
 .creator a {
-	color : var(--dark-color-b);
+	color : #006A88;
+	font-weight : bold
+}
+.share:hover {
+	cursor: pointer;
+}
+.shareContainer {
+	text-align :center
 }
 @media (max-width: 700px) {
 	.join-container{
@@ -272,7 +281,7 @@ button:disabled {
 		overflow : hidden;
 	}
 	.chat-messages {
-		max-height : 100%;
+		max-height : 90%;
 	}
 	.chat-container {
 		margin : 0

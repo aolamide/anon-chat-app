@@ -11,57 +11,58 @@
 			crossorigin="anonymous"
 		/>
 		<link rel="stylesheet" href="css/style.css" />
-		<title>Last Man Standing App</title>
+		<link rel="icon" type="image/png" href="/favicon.png"/>
+		<title>Anonymous Chat App</title>
 	</head>
 	<body>
 		<div class="join-container">
 			<header class="join-header">
-				<h1><i class="fas fa-bolt"></i> Last Man Standing</h1>
+				<a href='/'><h1><i class="fas fa-user-secret"></i> Anonymous Chat App</h1></a>
 			</header>
 			<main class="join-main">
-				<form>
+				<form autocomplete="off">
 					<div class="form-control">
-						<label for="gameName">Game Name</label>
+						<label for="roomName">Room Name</label>
 						<input
 							type="text"
-							name="game-name"
-                            id="gameName"
-                            minlength="3"
-							placeholder="Enter game name..."
+							name="roomName"
+							id="roomName"
+							minlength="3"
+							placeholder="Enter room name..."
 							required
 						/>
 					</div>
 					<div class="form-control">
-						<label for="maxUsers">Maximum number of players</label>
+						<label for="maxUsers">Maximum number of users</label>
 						<input
-                            type="number"
-                            min = "0"
+							type="number"
+							min = "2"
+							max="40"
 							name="maxUsers"
 							id="maxUsers"
-							placeholder="Enter max numbers of players..."
+							placeholder="Enter max numbers of users...(2-40)"
 							required
 						/>
 					</div>
 					<div class="form-control">
-						<label for="gameStart">Game start</label>
+						<label for="gameStart">Room start</label>
 						<input
-                            type="datetime-local"
-							name="gameStart"
-                            id="gameStart"
-							placeholder="Enter max numbers of players..."
+              type="datetime-local"
+							name="roomStart"
+              id="roomStart"
 							required
 						/>
 					</div>
-					<button type="submit" class="btn">Create Game</button>
-                </form>
-            </main>
-            <div class="error"></div>
-            <div class="success"></div>
+					<button type="submit" class="btn">Create Room</button>
+        </form>
+      </main>
+					<div class="error"></div>
+					<div class="success"></div>
         </div>
         <script>
             const date = new Date();
-            document.getElementById('gameStart').setAttribute('min', new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16))
+            document.getElementById('roomStart').setAttribute('min', new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16))
         </script>
-        <script src='./js/createGame.js'></script>
+        <script src='./js/createRoom.js'></script>
 	</body>
 </html>

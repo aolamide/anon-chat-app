@@ -19,13 +19,12 @@ mongoose.connection.on('error', err => {
     console.log(`DB connection error: ${err.message}`)
 });
 
-const bp = require('body-parser');
-const Game = require('./models/game');
+const Room = require('./models/room');
 
 const app = express();
 const server = http.createServer(app);
 
-app.use(bp.json());
+app.use(express.json());
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -38,20 +37,18 @@ const allowEntry = () => {
     //Run when a client connects 
     if(io.sockets._events === undefined) {
         io.on('connection', socket => {
-            socket.on('joinRoom', ({ username, room, startTime : stTime }) => {
-                startTime = stTime;
+            socket.on('joinRoom', ({ username, room }) => {
                 const user = userJoin(socket.id, username, room);
                 socket.join(user.room);
         
                 //Welcome current user
-                socket.emit('welcomeMessage', ['Welcome to Last Man Standing', 'You can start removing fellow players from ' + startTime,  'Click on the icon beside a member\'s name to remove them', 'If you try to remove anyone before the time above, it won\'t work and you could be disqualified' , 'If you\'re on mobile, click the green menu icon at the left side of the screen to open the member list', 'Once you\'re removed, you would still be in the game to see how it ends but would not be able to send messages or remove anyone still in the game', 'Leggo, may the best win!!!']);
+                socket.emit('welcomeMessage', ['Welcome to Anonymous Chat', 'You can get into the conversation right away or wait for more people to join ',  'If you\'re on mobile, click the green menu icon at the left side of the screen to open the participants list']);
         
                 //Broadcast when a user connects
                 socket.broadcast.to(user.room).emit('adminMessage',`${user.username} has joined the game`);
         
                 //Send users and room info
                 io.to(user.room).emit('roomUsers', {
-                    room : user.room,
                     users : getRoomUsers(user.room)
                 });
             });
@@ -59,46 +56,46 @@ const allowEntry = () => {
             //Listen for chatMessage
             socket.on('chatMessage', msg => {
                 const user = getCurrentUser(socket.id);
-                const removed = isRemoved(socket.id);
-                if(removed) {
-                    return socket.emit('adminMessage', 'You can\'t send messages as you have been removed')
-                }
+                // const removed = isRemoved(socket.id);
+                // if(removed) {
+                //     return socket.emit('adminMessage', 'You can\'t send messages as you have been removed')
+                // }
         
                 io.to(user.room).emit('message', formatMessage( user.username , msg));
             });
 
             //when a user is removed
-            socket.on('removal', data => {
-                const now = moment();
-                const removalTime = moment(new Date(startTime).toISOString());
-                if(now.diff(removalTime) <  0){
-                    return socket.emit('rejectRemoval', 'It is not time to remove yet, be warned!');
-                }
-                let { userToRemove } = data;
-                const user = getCurrentUser(socket.id);
-                const removingUser = getCurrentUser(userToRemove);
-                const a = isRemoved(socket.id);
-                const b = isRemoved(userToRemove);
-                if(userToRemove == socket.id) {
-                    return socket.emit('adminMessage', 'Why are you trying to remove yourself?');
-                }
-                else if(!a && !b && user && removingUser) {
-                    removeUser(userToRemove);
+            // socket.on('removal', data => {
+            //     const now = moment();
+            //     const removalTime = moment(new Date(startTime).toISOString());
+            //     if(now.diff(removalTime) <  0){
+            //         return socket.emit('rejectRemoval', 'It is not time to remove yet, be warned!');
+            //     }
+            //     let { userToRemove } = data;
+            //     const user = getCurrentUser(socket.id);
+            //     const removingUser = getCurrentUser(userToRemove);
+            //     const a = isRemoved(socket.id);
+            //     const b = isRemoved(userToRemove);
+            //     if(userToRemove == socket.id) {
+            //         return socket.emit('adminMessage', 'Why are you trying to remove yourself?');
+            //     }
+            //     else if(!a && !b && user && removingUser) {
+            //         removeUser(userToRemove);
 
-                    io.to(user.room).emit('adminMessage', `${user.username} removed ${removingUser.username}`);
+            //         io.to(user.room).emit('adminMessage', `${user.username} removed ${removingUser.username}`);
 
-                    io.to(removingUser.id).emit('removedYou', 'You have been removed');
+            //         io.to(removingUser.id).emit('removedYou', 'You have been removed');
 
-                    //Send users and room info
-                    io.to(user.room).emit('roomUsers', {
-                        room : user.room,
-                        users : getRoomUsers(user.room)
-                    });
-                    return;
-                }
-                if(a) return socket.emit('removalError', 'You have been removed already')
-                if(b) return socket.emit('removalError', `${removingUser.username} has already been removed}`);
-            })
+            //         //Send users and room info
+            //         io.to(user.room).emit('roomUsers', {
+            //             room : user.room,
+            //             users : getRoomUsers(user.room)
+            //         });
+            //         return;
+            //     }
+            //     if(a) return socket.emit('removalError', 'You have been removed already')
+            //     if(b) return socket.emit('removalError', `${removingUser.username} has already been removed}`);
+            // })
             //RRuns when client disconnects
             socket.on('disconnect', () => {
                 const user = userLeave(socket.id);
@@ -121,49 +118,51 @@ const allowEntry = () => {
 
 app.get('/create', (req, res) => {
     res.sendFile(__dirname + '/public/createGame.html')
-})
+});
+
+app.get('/chat', (req, res) => {
+    res.sendFile(__dirname + '/public/chat.html')
+});
+
+app.get('/join', (req, res) => {
+    res.sendFile(__dirname + '/public/join.html')
+});
 
 app.post('/game', (req, res) => {
     let { startTime, name, maxUsers } = req.body;
-    const now = moment();
-    const gameTime = moment(startTime);
-    if((gameTime.diff(now)) <= (1000 * 60 * 5)) {
-        return res.json('Please enter a future date greater than 5minutes from now');
-    }
-    else if (moment(startTime).isValid() && Number(maxUsers) && name.trim()) {
-    Game.findOne({name}, (err, game) => {
-            if(game) return res.json('Game name already exists');
-            startTime = moment(startTime).format('LLLL');
-            maxUsers = Number(maxUsers);
-            const newGame = new Game({name, startTime, maxUsers});
-            newGame.save((err, saved) => {
-                if(err || !saved) return res.json('Error creating game');
-                return res.json({
-                    message : 'Game created successfully',
-                    start : saved.startTime,
-                    id : saved.id
-                });
-            })
+    if (moment(startTime).isValid() && Number(maxUsers) && name.trim()) {
+        maxUsers = Number(maxUsers);
+        if(maxUsers < 2 || maxUsers > 40) return res.json('Invalid number of users.');
+        const newRoom = new Room({name, startTime, maxUsers});
+        newRoom.save((err, saved) => {
+            if(err || !saved) return res.json('Error creating room.');
+            return res.json({
+                message : `Room "${name}" created successfully.`,
+                start : saved.startTime,
+                id : saved.id,
+                name
+            });
         })
     }
-    else return res.json('Error, please fill all fields with correct format');
+    else return res.json('Error, please fill all fields with correct format.');
 });
 
 //Endpoint to join game
 app.post('/join', (req, res) => {
     const { code : id, username } = req.body;
-    Game.findOne({id}, (err, game) => {
-        if(err || !game) return res.json({error : 'Error. Pin may be incorrect.'});
-        let roomUsers = getRoomUsers(game.id);
+    Room.findOne({id}, (err, room) => {
+        if(err || !room) return res.json({error : 'Error. Pin may be incorrect.'});
+        let roomUsers = getRoomUsers(room.id);
         let nameExists = roomUsers.find(user => user.username.toLowerCase() === username.toLowerCase());
         const now = moment();
-        const gameStart = moment(new Date(game.startTime).toISOString());
-        if(now.diff(gameStart) >= 0) return res.json({error : 'Game has closed for entries'})
-        else if(roomUsers.length >= game.maxUsers) return res.json({error : 'Game is full'});
-        else if(nameExists) return res.json({error : 'Username is taken, choose another'});
+        const roomStart = moment(room.startTime);
+        if(roomStart.diff(now) > 0) return res.json({ error : 'Room has not started yet.'});
+        if(now.diff(roomStart, 'hours') >= 1) return res.json({error : 'Room has closed for entries.'})
+        else if(roomUsers.length >= room.maxUsers) return res.json({error : 'Room is full.'});
+        else if(nameExists) return res.json({error : 'Username is taken, choose another.'});
         else {
-            allowEntry(game.startTime);
-            return res.json({id : game.id, roomName : game.name, startTime : game.startTime});
+            allowEntry(room.startTime);
+            return res.json({id : room.id, roomName : room.name, startTime : room.startTime});
         }
     });
 });

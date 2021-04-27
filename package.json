@@ -1,7 +1,7 @@
 {
-  "name": "last-man-standing",
+  "name": "anon-chat-app",
   "version": "0.0.1",
-  "description": "Last man standing game",
+  "description": "Anonymous chatting app",
   "main": "app.js",
   "scripts": {
     "start": "node app",

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const nanoid = require('nanoid').customAlphabet('01234567891011121314151617181920', 10);
 
-const gameSchema = new mongoose.Schema({
+const roomSchema = new mongoose.Schema({
     id: {
         type: String,
         default: () => nanoid()
@@ -17,6 +17,6 @@ const gameSchema = new mongoose.Schema({
     }
 });
 
-const Game = mongoose.model('Game', gameSchema);
+const Room = mongoose.model('Room', roomSchema);
 
-module.exports = Game;
+module.exports = Room;

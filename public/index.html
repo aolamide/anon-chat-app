@@ -11,42 +11,62 @@
 			crossorigin="anonymous"
 		/>
 		<link rel="stylesheet" href="css/style.css" />
-		<title>Last Man Standing App</title>
+    <link rel="icon" type="image/png" href="/favicon.png"/>
+		<title>Anonymous Chat App</title>
+    <style>
+      .home-container {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height : 80vh
+      }
+      h1 {
+        color : #345634;
+        font-size: 80px;
+      }
+      .homeBtn {
+        padding : 20px;
+        display : block;
+        margin: 10px auto;
+        background-color: #006F05;
+        color : white;
+        border: none;
+        width : 300px;
+        font-weight : bold;
+      }
+      ul {
+        list-style-type: disc;
+        margin: 0 auto;
+        text-align: left;
+      }
+      ul li {
+        margin: 15px 0;
+        font-size: 20px;
+      }
+      @media screen and (max-width : 468px) {
+        h1 {
+          font-size : 40px
+        }
+        ul li {
+          font-size : 15px
+        }
+      }
+    </style>
 	</head>
 	<body>
-		<div class="join-container">
-			<header class="join-header">
-				<h1><i class="fa fa-bolt"></i> Last Man Standing</h1>
-			</header>
-			<main class="join-main">
-				<form action="chat.html">
-					<div class="form-control">
-						<label for="username">Username</label>
-						<input
-							type="text"
-							name="username"
-							minlength="3"
-							id="username"
-							placeholder="Enter username..."
-							required
-						/>
-					</div>
-					<div class="form-control">
-						<label for="code">Game Code</label>
-						<input
-							type="text"
-							name="code"
-							id="code"
-							placeholder="Enter game code"
-							required
-						/>
-					</div>
-					<button type="submit" class="btn">Join Game</button>
-					<p class="center" id="or">OR</p>
-					<p class="center bold" id="linkCreate"><a style="color:white" href="/create">Create Game</a></p>
-				</form>
-			</main>
+		<div class="home-container">
+			<h1><i class="fa fa-user-secret"></i> Anonymous Chat App</h1>
+      <ul>
+        <li>Create scheduled chat groups on topics of your choice.</li>
+        <li>Share link to participants.</li>
+        <li>Let everyone chat anonymously.</li>
+        <li>Up to 40 people in a room.</li>
+        <li>No login/sign up required.</li>
+      </ul>
+      <a href="/join"class='homeBtn'>JOIN A ROOM</a>
+      <a href="/create"class='homeBtn'>CREATE A ROOM</a>
 		</div>
-		<p class='creator'>Built with &hearts; by <a target='blank' rel="noreferrer noopener" href="https://twitter.com/olamideaboyeji">Olamide</a></p>
+		<p class='creator'>Built with &hearts; by <a target='_blank' rel="noreferrer noopener" href="https://twitter.com/olamideaboyeji">Olamide</a></p>
 	</body>
 </html>
