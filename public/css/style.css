@@ -104,9 +104,32 @@ button:disabled {
 
 .chat-messages .message {
 	padding: 10px;
-	margin-bottom: 15px;
+	margin-top: 15px;
 	background-color: var(--light-color);
-	border-radius: 5px;
+	border-radius : 5px;
+}
+.chat-messages .message:first-child  {
+	margin-top: 0;
+}
+.chat-messages .message:last-child {
+	margin-bottom: 15px;
+}
+.chat-messages .chatMsg {
+	border-radius: 0px 5px 5px 5px;
+	position: relative;
+}
+.chat-messages .noUsernameMessage {
+	border-radius: 0px 5px 5px 5px;
+	margin-top: 4px;
+}
+.chat-messages .chatMsg::after {
+  content: "";
+  position: absolute;
+  top: 0%;
+  right: 100%;
+  border-width: 5px;
+  border-style: solid;
+  border-color: var(--light-color) var(--light-color) transparent transparent;
 }
 
 .chat-messages .message .meta {

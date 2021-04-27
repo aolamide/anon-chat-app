@@ -97,26 +97,38 @@ function initSocket(room, roomName) {
     window.addEventListener('beforeunload', () => socket.disconnect())
 }
 
+let lastMessageUsername = '';
+
 //Output message to DOM
 function outputMessage(message){
     const div = document.createElement('div');
-    div.classList.add('message');
-    div.innerHTML = `<p class="meta">${message.username} <span>${message.time}</span></p>
-    <p class="text">
-        ${message.text}
-    </p>`; 
-    document.querySelector('.chat-messages').appendChild(div);
+    if(lastMessageUsername !== message.username) {
+        div.classList.add(...['message', 'chatMsg']);
+        div.innerHTML = `<p class="meta">${message.username} <span>${message.time}</span></p>
+        <p class="text">
+            ${message.text}
+        </p>`;
+    } else {
+        div.classList.add(...['message', 'noUsernameMessage']);
+        div.innerHTML = `<p class="meta"><span>${message.time}</span></p><p class="text">${message.text}</p>`;
+    }
+     
+    chatMessages.appendChild(div);
     //scroll down
     chatMessages.scrollTop = chatMessages.scrollHeight;
+    lastMessageUsername = message.username;
 }
 
 function outputAdminMessage(message) {
     const div = document.createElement('div');
     div.classList.add(...['message', 'adminMessage']);
     div.innerHTML = `<p class="meta">${message}</p>`; 
-    document.querySelector('.chat-messages').appendChild(div);
+    chatMessages.appendChild(div);
     //scroll down
     chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    //reset lastMessageUsername
+    lastMessageUsername = '';
 }
 
 //Add room name to DOM
