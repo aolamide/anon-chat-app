@@ -45,7 +45,7 @@ const allowEntry = () => {
                 socket.emit('welcomeMessage', ['Welcome to Anonymous Chat', 'You can get into the conversation right away or wait for more people to join ',  'If you\'re on mobile, click the green menu icon at the left side of the screen to open the participants list']);
         
                 //Broadcast when a user connects
-                socket.broadcast.to(user.room).emit('adminMessage',`${user.username} has joined the game`);
+                socket.broadcast.to(user.room).emit('adminMessage',`${user.username} has joined the room`);
         
                 //Send users and room info
                 io.to(user.room).emit('roomUsers', {
@@ -101,7 +101,7 @@ const allowEntry = () => {
                 const user = userLeave(socket.id);
         
                 if(user) {
-                    io.to(user.room).emit('adminMessage', `${user.username} has left the game`);
+                    io.to(user.room).emit('adminMessage', `${user.username} has left the room`);
         
                     //Send users and room info
                     io.to(user.room).emit('roomUsers', {
