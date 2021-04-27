@@ -46,7 +46,7 @@ window.onload = function () {
         else {
             chatLoader.style.display = 'none'
             chatContainer.style.display = 'block'
-            initSocket(response.id, response.roomName, response.startTime)
+            initSocket(response.id, response.roomName)
         }
     });
 }
