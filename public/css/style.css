@@ -302,3 +302,16 @@ button:disabled {
 		transition : all 1.2s;
 	}
 }
+@media screen and (max-width : 468px) {
+	.join-container{
+		width: 95vw
+	}
+}
+@media screen and (max-width : 400px) {
+	.chat-header {
+		padding : 10px;
+	}
+	.btn {
+		padding: 5px;
+	}
+}
