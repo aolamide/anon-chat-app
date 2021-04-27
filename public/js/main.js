@@ -46,6 +46,7 @@ window.onload = function () {
         else {
             chatLoader.style.display = 'none'
             chatContainer.style.display = 'block'
+            document.title = `Chat Room : ${response.roomName}`;
             initSocket(response.id, response.roomName)
         }
     });
