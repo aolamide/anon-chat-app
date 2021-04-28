@@ -29,27 +29,31 @@ const { username, code } = Qs.parse(location.search, {
 });
 
 window.onload = function () {
-    fetch('/join', {
-        method : 'POST',
-        headers : {
-            'Content-Type' : 'application/json',
-            'Accept' : 'application/json'
-        },
-        body : JSON.stringify({username, code : code.trim()})
-    })
-    .then(res => res.json())
-    .then(response => {
-        if(response.error){
-            alert(response.error);
-            window.location.href = `/join?code=${code}`;
-        }
-        else {
-            chatLoader.style.display = 'none'
-            chatContainer.style.display = 'block'
-            document.title = `Chat Room : ${response.roomName}`;
-            initSocket(response.id, response.roomName)
-        }
-    });
+    if(username?.trim() && code?.trim()){
+        fetch('/join', {
+            method : 'POST',
+            headers : {
+                'Content-Type' : 'application/json',
+                'Accept' : 'application/json'
+            },
+            body : JSON.stringify({username, code : code.trim()})
+        })
+        .then(res => res.json())
+        .then(response => {
+            if(response.error){
+                alert(response.error);
+                window.location.href = `/join?code=${code}`;
+            }
+            else {
+                chatLoader.style.display = 'none'
+                chatContainer.style.display = 'block'
+                document.title = `Chat Room : ${response.roomName}`;
+                initSocket(response.id, response.roomName)
+            }
+        });
+    } else {
+        window.location.href = `/join`;
+    }
 }
 
 let socket = '';
