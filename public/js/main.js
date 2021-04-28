@@ -125,6 +125,9 @@ function outputMessage(message){
 }
 
 function outputAdminMessage(message) {
+    const clearFloat = document.createElement('div');
+    clearFloat.style.clear = 'both';
+    chatMessages.appendChild(clearFloat);
     const div = document.createElement('div');
     div.classList.add(...['message', 'adminMessage']);
     div.innerHTML = `<p class="meta">${message}</p>`; 
