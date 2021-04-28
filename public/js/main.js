@@ -35,7 +35,7 @@ window.onload = function () {
             'Content-Type' : 'application/json',
             'Accept' : 'application/json'
         },
-        body : JSON.stringify({username, code})
+        body : JSON.stringify({username, code : code.trim()})
     })
     .then(res => res.json())
     .then(response => {
@@ -58,7 +58,7 @@ function initSocket(room, roomName) {
     socket = io();
 
     //Join chat room
-    socket.emit('joinRoom', { username, room });
+    socket.emit('joinRoom', { username, room, roomName });
 
     //Get room and users
     socket.on('roomUsers', ({ users }) => {
@@ -147,6 +147,7 @@ function outputRoomName(room) {
 //Add users to DOM
 function outputUsers(users) {
     userList.innerHTML = `
-        ${users.map(user => `<li>${user.username}</li>`).join('')}
+        <li>${username}<strong>(you)</strong></li>
+        ${users.map(user => user.username === username ?  '' : `<li>${user.username}</li>`).join('')}
     `;
 }

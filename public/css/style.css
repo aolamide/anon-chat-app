@@ -19,7 +19,8 @@ body {
 	font-size: 16px;
 	background: var(--light-color);
 	margin: 20px;
-	min-height: 80vh
+	min-height: 80vh;
+	overflow: hidden;
 }
 
 ul {
@@ -79,6 +80,7 @@ button:disabled {
 	color: #fff;
 	padding: 20px 20px 60px;
 	overflow-y: scroll;
+	max-height: 500px;
 }
 
 .chat-sidebar h2 {
