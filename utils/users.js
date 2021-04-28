@@ -25,7 +25,7 @@ function userLeave(id) {
 
 //Get all users in a room
 function getRoomUsers(room) {
-    return users.filter(user => user.room === room && !isRemoved(user.id));
+    return users.filter(user => user.room === room);
 }
 
 //Check if user has been removed
