@@ -37,12 +37,12 @@ const allowEntry = () => {
     //Run when a client connects 
     if(io.sockets._events === undefined) {
         io.on('connection', socket => {
-            socket.on('joinRoom', ({ username, room }) => {
+            socket.on('joinRoom', ({ username, room, roomName }) => {
                 const user = userJoin(socket.id, username, room);
                 socket.join(user.room);
         
                 //Welcome current user
-                socket.emit('welcomeMessage', ['Welcome to Anonymous Chat', 'You can get into the conversation right away or wait for more people to join ',  'If you\'re on mobile, click the green menu icon at the left side of the screen to open the participants list']);
+                socket.emit('welcomeMessage', [`Welcome to Anonymous Chat on ${roomName}`,  'If you\'re on mobile, click the green menu icon at the left side of the screen to show room details', 'Refresh the page if you are not able to send or receive messages at any point.']);
         
                 //Broadcast when a user connects
                 socket.broadcast.to(user.room).emit('adminMessage',`${user.username} has joined the room`);
