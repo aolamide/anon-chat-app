@@ -349,6 +349,7 @@ button:disabled {
 		position: fixed;
 		left: 0;
 		height: 100vh;
+		max-height: none;
 		z-index: 120;
 		width: 0%;
 		padding : 0;
