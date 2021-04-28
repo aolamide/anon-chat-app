@@ -133,7 +133,7 @@ app.get('/join', (req, res) => {
 
 app.post('/game', (req, res) => {
     let { startTime, name, maxUsers } = req.body;
-    if (moment(startTime).isValid() && Number(maxUsers) && name.trim()) {
+    if (moment(startTime).isValid() && Number(maxUsers) && name?.trim()) {
         maxUsers = Number(maxUsers);
         if(maxUsers < 2 || maxUsers > 40) return res.json('Invalid number of users.');
         const newRoom = new Room({name, startTime, maxUsers});
@@ -153,6 +153,7 @@ app.post('/game', (req, res) => {
 //Endpoint to join game
 app.post('/join', (req, res) => {
     const { code : id, username } = req.body;
+    if(!id || !username) return res.json({ error : 'Username and room code are required'});
     Room.findOne({id}, (err, room) => {
         if(err || !room) return res.json({error : 'Error. Pin may be incorrect.'});
         let roomUsers = getRoomUsers(room.id);
