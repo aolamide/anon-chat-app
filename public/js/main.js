@@ -102,14 +102,19 @@ let lastMessageUsername = '';
 //Output message to DOM
 function outputMessage(message){
     const div = document.createElement('div');
+    let isMyMessage = message.username === username;
     if(lastMessageUsername !== message.username) {
-        div.classList.add(...['message', 'chatMsg']);
-        div.innerHTML = `<p class="meta">${message.username} <span>${message.time}</span></p>
+        isMyMessage ? div.classList.add(...['message', 'myMsg', 'chats']) : div.classList.add(...['message', 'chatMsg', 'chats']);
+        div.innerHTML = `<p class="meta">${isMyMessage ? '' : message.username} <span>${message.time}</span></p>
         <p class="text">
             ${message.text}
         </p>`;
     } else {
-        div.classList.add(...['message', 'noUsernameMessage']);
+        div.classList.add(...['message', 'noUsernameMessage', 
+        'chats']);
+        if(isMyMessage) {
+            div.classList.add('myMsgGroup')
+        }
         div.innerHTML = `<p class="meta"><span>${message.time}</span></p><p class="text">${message.text}</p>`;
     }
      
