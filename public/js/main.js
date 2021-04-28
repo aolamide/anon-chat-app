@@ -24,19 +24,24 @@ toggler.addEventListener('click', function() {
 
 
 //get username and room from URL
-const { username, code } = Qs.parse(location.search, {
+let { username, code } = Qs.parse(location.search, {
     ignoreQueryPrefix : true
 });
 
 window.onload = function () {
-    if(username?.trim() && code?.trim()){
+    if(username && code){
+        username = username.trim();
+        code = code.trim();
+        if(!username|| !code) {
+            window.location.href = '/join';
+        }
         fetch('/join', {
             method : 'POST',
             headers : {
                 'Content-Type' : 'application/json',
                 'Accept' : 'application/json'
             },
-            body : JSON.stringify({username, code : code.trim()})
+            body : JSON.stringify({username, code})
         })
         .then(res => res.json())
         .then(response => {
