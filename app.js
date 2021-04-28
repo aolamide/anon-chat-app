@@ -60,8 +60,11 @@ const allowEntry = () => {
                 // if(removed) {
                 //     return socket.emit('adminMessage', 'You can\'t send messages as you have been removed')
                 // }
-        
-                io.to(user.room).emit('message', formatMessage( user.username , msg));
+                if(user) {
+                    io.to(user.room).emit('message', formatMessage( user.username , msg));
+                } else {
+                    socket.disconnect();
+                }
             });
 
             //when a user is removed
