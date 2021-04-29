@@ -1,39 +1,22 @@
 const express = require('express');
 const http = require('http');
 const path = require('path');
-const moment = require('moment');
+const config  = require('./config');
+const db = require('./helpers/db');
+const roomRouter = require('./routes/room');
+const moment = require("moment");
+const { userJoin, getCurrentUser, userLeave, getRoomUsers } = require('./utils/users');
 const formatMessage = require('./utils/messages');
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-
-dotenv.config();
-
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/lms';
-
-//conect db
-mongoose.connect(MONGO_URI, {useNewUrlParser: true, useUnifiedTopology : true, useCreateIndex : true})
-.then(() => console.log('DB connected'))
-.catch(err => console.log(err));
-
-mongoose.connection.on('error', err => {
-    console.log(`DB connection error: ${err.message}`)
-});
-
 const Room = require('./models/room');
+const redirectToHttps = require('./helpers/https');
 
 const app = express();
 const server = http.createServer(app);
 
-app.use(express.json());
-
-app.use(express.static(path.join(__dirname, 'public')));
-
 const io = require('socket.io')(server);
 
-const { userJoin, getCurrentUser, userLeave, getRoomUsers, isRemoved, removeUser } = require('./utils/users');
 
-const allowEntry = () => {
-    let startTime = '';
+const initSocket = ()  => {
     //Run when a client connects 
     if(io.sockets._events === undefined) {
         io.on('connection', socket => {
@@ -56,50 +39,14 @@ const allowEntry = () => {
             //Listen for chatMessage
             socket.on('chatMessage', msg => {
                 const user = getCurrentUser(socket.id);
-                // const removed = isRemoved(socket.id);
-                // if(removed) {
-                //     return socket.emit('adminMessage', 'You can\'t send messages as you have been removed')
-                // }
                 if(user) {
                     io.to(user.room).emit('message', formatMessage( user.username , msg));
                 } else {
                     socket.disconnect();
                 }
             });
-
-            //when a user is removed
-            // socket.on('removal', data => {
-            //     const now = moment();
-            //     const removalTime = moment(new Date(startTime).toISOString());
-            //     if(now.diff(removalTime) <  0){
-            //         return socket.emit('rejectRemoval', 'It is not time to remove yet, be warned!');
-            //     }
-            //     let { userToRemove } = data;
-            //     const user = getCurrentUser(socket.id);
-            //     const removingUser = getCurrentUser(userToRemove);
-            //     const a = isRemoved(socket.id);
-            //     const b = isRemoved(userToRemove);
-            //     if(userToRemove == socket.id) {
-            //         return socket.emit('adminMessage', 'Why are you trying to remove yourself?');
-            //     }
-            //     else if(!a && !b && user && removingUser) {
-            //         removeUser(userToRemove);
-
-            //         io.to(user.room).emit('adminMessage', `${user.username} removed ${removingUser.username}`);
-
-            //         io.to(removingUser.id).emit('removedYou', 'You have been removed');
-
-            //         //Send users and room info
-            //         io.to(user.room).emit('roomUsers', {
-            //             room : user.room,
-            //             users : getRoomUsers(user.room)
-            //         });
-            //         return;
-            //     }
-            //     if(a) return socket.emit('removalError', 'You have been removed already')
-            //     if(b) return socket.emit('removalError', `${removingUser.username} has already been removed}`);
-            // })
-            //RRuns when client disconnects
+  
+            //Runs when client disconnects
             socket.on('disconnect', () => {
                 const user = userLeave(socket.id);
         
@@ -118,40 +65,7 @@ const allowEntry = () => {
     }
 }
 
-
-app.get('/create', (req, res) => {
-    res.sendFile(__dirname + '/public/createGame.html')
-});
-
-app.get('/chat', (req, res) => {
-    res.sendFile(__dirname + '/public/chat.html')
-});
-
-app.get('/join', (req, res) => {
-    res.sendFile(__dirname + '/public/join.html')
-});
-
-app.post('/game', (req, res) => {
-    let { startTime, name, maxUsers } = req.body;
-    if (moment(startTime).isValid() && Number(maxUsers) && name?.trim()) {
-        maxUsers = Number(maxUsers);
-        if(maxUsers < 2 || maxUsers > 40) return res.json('Invalid number of users.');
-        const newRoom = new Room({name, startTime, maxUsers});
-        newRoom.save((err, saved) => {
-            if(err || !saved) return res.json('Error creating room.');
-            return res.json({
-                message : `Room "${name}" created successfully.`,
-                start : saved.startTime,
-                id : saved.id,
-                name
-            });
-        })
-    }
-    else return res.json('Error, please fill all fields with correct format.');
-});
-
-//Endpoint to join game
-app.post('/join', (req, res) => {
+const joinRoom = (req, res) => {
     const { code : id, username } = req.body;
     if(!id || !username) return res.json({ error : 'Username and room code are required'});
     Room.findOne({id}, (err, room) => {
@@ -165,11 +79,29 @@ app.post('/join', (req, res) => {
         else if(roomUsers.length >= room.maxUsers) return res.json({error : 'Room is full.'});
         else if(nameExists) return res.json({error : 'Username is taken, choose another.'});
         else {
-            allowEntry(room.startTime);
+            initSocket();
             return res.json({id : room.id, roomName : room.name, startTime : room.startTime});
         }
     });
-});
+}
 
+app.use(redirectToHttps);
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json());
+app.use(roomRouter);
+app.post('/join', joinRoom);
 
-server.listen(process.env.PORT || 3000, () => console.log('Server started'));
+const PORT = config.PORT;
+
+(async function() {
+    try {
+        await db.connect();
+        server.listen(PORT, () => console.log('DB connected. Server listening on PORT ' + PORT));
+        // module.exports = server;
+    } catch (error) {
+        console.error(error);
+        process.exit(0);
+    }
+})();
+
+module.exports = initSocket;
