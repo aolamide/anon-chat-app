@@ -17,7 +17,7 @@ createForm.addEventListener('submit', e => {
     successBox.innerHTML = '';
     errorBox.innerHTML = ''
     const { roomName, maxUsers, roomStart } = e.target.elements;
-    fetch('/game', {
+    fetch('/room', {
         method : 'POST',
         headers : {
             'Content-Type' : 'application/json',
