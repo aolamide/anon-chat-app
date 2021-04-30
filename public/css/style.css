@@ -267,6 +267,7 @@ button:disabled {
 	left: 0;
 	background-color: var(--dark-color-a);
 	transition: all 1.2s;
+	z-index : 10
 }
 .sideToggler i {
 	color : white;
