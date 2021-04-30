@@ -9,6 +9,7 @@ const { userJoin, getCurrentUser, userLeave, getRoomUsers } = require('./utils/u
 const formatMessage = require('./utils/messages');
 const Room = require('./models/room');
 const redirectToHttps = require('./helpers/https');
+const { getPreviousMessages, addToCache } = require('./helpers/cache');
 
 const app = express();
 const server = http.createServer(app);
@@ -23,13 +24,25 @@ const initSocket = ()  => {
             socket.on('joinRoom', ({ username, room, roomName }) => {
                 const user = userJoin(socket.id, username, room);
                 socket.join(user.room);
-        
+                
+                //get and display old messages
+                const oldMessages = getPreviousMessages(user.room);
+                
+                oldMessages.forEach(msg => {
+                    if(msg.type === 'chatMessage') {
+                        socket.emit('message', msg);
+                    } else {
+                        socket.emit('adminMessage', msg.text)
+                    } 
+                });
+
                 //Welcome current user
                 socket.emit('welcomeMessage', [`Welcome to Anonymous Chat on ${roomName}`,  'If you\'re on mobile, click the green menu icon at the left side of the screen to show room details', 'Refresh the page if you are not able to send or receive messages at any point.']);
         
                 //Broadcast when a user connects
-                socket.broadcast.to(user.room).emit('adminMessage',`${user.username} has joined the room`);
-        
+                socket.broadcast.to(user.room).emit('adminMessage',`${user.username} joined the room`);
+                addToCache(user.room, { text : `${user.username} joined the room`, type : 'adminMessage' });
+
                 //Send users and room info
                 io.to(user.room).emit('roomUsers', {
                     users : getRoomUsers(user.room)
@@ -40,7 +53,12 @@ const initSocket = ()  => {
             socket.on('chatMessage', msg => {
                 const user = getCurrentUser(socket.id);
                 if(user) {
-                    io.to(user.room).emit('message', formatMessage( user.username , msg));
+                    const message =  formatMessage(user.username , msg);
+                    io.to(user.room).emit('message', message);
+
+                    //add message to cache for 1hr
+                    message.type = 'chatMessage'
+                    addToCache(user.room, message);
                 } else {
                     socket.disconnect();
                 }
@@ -51,13 +69,16 @@ const initSocket = ()  => {
                 const user = userLeave(socket.id);
         
                 if(user) {
-                    io.to(user.room).emit('adminMessage', `${user.username} has left the room`);
+                    const message = `${user.username} left the room`;
+                    io.to(user.room).emit('adminMessage', message);
         
                     //Send users and room info
                     io.to(user.room).emit('roomUsers', {
                         room : user.room,
                         users : getRoomUsers(user.room)
                     });
+
+                    addToCache(user.room, { text : message, type : 'adminMessage' });
                 }
             });
         

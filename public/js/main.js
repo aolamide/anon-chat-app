@@ -86,6 +86,10 @@ function initSocket(room, roomName) {
     });
 
     socket.on('adminMessage', message => {
+        const splitMessage = message.split(' ');
+        if(splitMessage[0] === username) {
+            message = `You ${splitMessage[1]}`
+        }
         outputAdminMessage(message);
     })
 
