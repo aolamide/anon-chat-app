@@ -2,10 +2,12 @@ const chatForm = document.getElementById('chat-form');
 const chatMessages = document.querySelector('.chat-messages');
 const roomName = document.getElementById('room-name');
 const userList = document.getElementById('users');
+const usersCount = document.getElementById('users-count');
 const chatLoader = document.querySelector('.chat-loader');
 const chatContainer = document.querySelector('.chat-container');
 const toggler = document.querySelector('.sideToggler');
 const sideBar = document.querySelector('.chat-sidebar');
+const messageInput = document.getElementById('msg');
 let sideOpen = false;
 
 //side nav
@@ -98,14 +100,15 @@ function initSocket(room, roomName) {
         e.preventDefault();
 
         //Get message text
-        const msg = e.target.elements.msg.value;
+        // const msg = e.target.elements.msg.value;
+        const msg = messageInput.value;
 
         //Emit message to server
         socket.emit('chatMessage', msg);
 
         //Clear input
-        e.target.elements.msg.value = '';
-        e.target.elements.msg.blur();
+        messageInput.value = '';
+        messageInput.focus();
     });
     window.addEventListener('beforeunload', () => socket.disconnect())
 }
@@ -159,6 +162,7 @@ function outputRoomName(room) {
 
 //Add users to DOM
 function outputUsers(users) {
+    usersCount.innerHTML = `<strong>${users.length}</strong>`;
     userList.innerHTML = `
         <li>${username}<strong>(you)</strong></li>
         ${users.map(user => user.username === username ?  '' : `<li>${user.username}</li>`).join('')}
