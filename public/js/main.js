@@ -119,9 +119,10 @@ let lastMessageUsername = '';
 function outputMessage(message){
     const div = document.createElement('div');
     let isMyMessage = message.username === username;
+    const time = new Date(message.time).toLocaleTimeString();
     if(lastMessageUsername !== message.username) {
         isMyMessage ? div.classList.add(...['message', 'myMsg', 'chats']) : div.classList.add(...['message', 'chatMsg', 'chats']);
-        div.innerHTML = `<p class="meta">${isMyMessage ? '' : message.username} <span>${message.time}</span></p>
+        div.innerHTML = `<p class="meta">${isMyMessage ? '' : message.username} <span>${time}</span></p>
         <p class="text">
             ${message.text}
         </p>`;
@@ -131,7 +132,7 @@ function outputMessage(message){
         if(isMyMessage) {
             div.classList.add('myMsgGroup')
         }
-        div.innerHTML = `<p class="meta"><span>${message.time}</span></p><p class="text">${message.text}</p>`;
+        div.innerHTML = `<p class="meta"><span>${time}</span></p><p class="text">${message.text}</p>`;
     }
      
     chatMessages.appendChild(div);
