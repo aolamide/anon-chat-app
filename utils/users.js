@@ -1,5 +1,4 @@
 const users = [];
-const removedUsers = [];
 
 //Join user to chat
 function userJoin(id, username, room) {
@@ -28,24 +27,10 @@ function getRoomUsers(room) {
     return users.filter(user => user.room === room);
 }
 
-//Check if user has been removed
-function removeUser(id) {
-    const index = users.findIndex(user => user.id === id);
-    if(index !== -1) {
-        removedUsers.push(users[index]);
-        return ;
-    }
-}
-
-function isRemoved(id) {
-    return removedUsers.find(user => user.id === id)
-}
 
 module.exports = {
     userJoin,
     getCurrentUser,
     userLeave,
-    getRoomUsers,
-    removeUser,
-    isRemoved
+    getRoomUsers
 }
