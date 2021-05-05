@@ -13,10 +13,11 @@ let sideOpen = false;
 //side nav
 toggler.addEventListener('click', function() {
     if(sideOpen) {
-        sideBar.style.width = '0px';
+        sideBar.style.clipPath = 'inset(0 100% 0 0)';
         sideBar.style.padding = '0px';
         toggler.style.left = '0';
     }else {
+        sideBar.style.clipPath = 'inset(0 0 0 0)';
         sideBar.style.width = '70vw';
         sideBar.style.padding = '20px 20px 60px';
         toggler.style.left = '70vw'
