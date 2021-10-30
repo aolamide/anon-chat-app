@@ -1,52 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
-		<link
-			rel="stylesheet"
-			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
-			integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk="
-			crossorigin="anonymous"
-		/>
-    <meta name="description" content="Creating and joining anonymous chats online could not have been any better. AnonyChats is the No.1 platform to create anonymous chats. It is free, and requires no login/signup.">
-    <meta name="keywords" content="anonymous chats, anon, online chats, rooms, topics, anonymous rooms, anon chats, anon rooms, anonymous social, anonychats, anonychats live">
-    <meta name="robots" content="index, follow">
-		<link rel="stylesheet" href="css/style.css" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
+      integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk="
+      crossorigin="anonymous"
+    />
+    <meta
+      name="description"
+      content="Creating and joining anonymous chats online could not have been any better. AnonyChats is the No.1 platform to create anonymous chats. It is free, and requires no login/signup."
+    />
+    <meta
+      name="keywords"
+      content="anonymous chats, anon, online chats, rooms, topics, anonymous rooms, anon chats, anon rooms, anonymous social, anonychats, anonychats live"
+    />
+    <meta name="robots" content="index, follow" />
+    <link rel="stylesheet" href="css/style.css" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="AnonyChats" />
-    <meta property="og:description" content="Creating and joining anonymous chats online could not have been any better. AnonyChats is the No.1 platform to create anonymous chats. It is free, and requires no login/signup." />
+    <meta
+      property="og:description"
+      content="Creating and joining anonymous chats online could not have been any better. AnonyChats is the No.1 platform to create anonymous chats. It is free, and requires no login/signup."
+    />
     <meta property="og:image" content="https://anonychats.live/favicon.png" />
     <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="AnonyChats">
-    <meta name="twitter:description" content="Creating and joining anonymous chats online could not have been any better. AnonyChats is the No.1 platform to create anonymous chats. It is free, and requires no login/signup.">
-    <meta name="twitter:site" content="@olamideaboyeji">
-    <meta name="twitter:creator" content="@olamideaboyeji">
+    <meta name="twitter:title" content="AnonyChats" />
+    <meta
+      name="twitter:description"
+      content="Creating and joining anonymous chats online could not have been any better. AnonyChats is the No.1 platform to create anonymous chats. It is free, and requires no login/signup."
+    />
+    <meta name="twitter:site" content="@olamideaboyeji" />
+    <meta name="twitter:creator" content="@olamideaboyeji" />
     <meta name="twitter:image" content="https://anonychats.live/favicon.png" />
-    <link rel="icon" type="image/png" href="/favicon.png"/>
-		<title>AnonyChats</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <title>AnonyChats</title>
     <style>
       .home-container {
         text-align: center;
         display: flex;
         flex-direction: column;
         justify-content: center;
-        height : 90vh
+        height: 90vh;
       }
       h1 {
-        color : #345634;
+        color: #345634;
         font-size: 80px;
       }
+      .btn-wrap {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      @media (max-width: 500px) {
+        .home-container {
+          padding: 1.5rem 0;
+        }
+        .btn-wrap {
+          flex-wrap: wrap;
+          width: 90%;
+          max-width: 500px;
+          margin: 1rem auto;
+        }
+        .homeBtn {
+          width: 100% !important;
+          margin: 0.5rem 0 !important;
+        }
+      }
+      @media (max-height: 420px) {
+        p.creator {
+          position: static;
+          margin: 3rem auto 0 auto;
+        }
+        body {
+          overflow-y: auto;
+        }
+      }
+      .homeBtn:nth-child(2) {
+        margin-left: 1.5rem;
+      }
+
       .homeBtn {
-        padding : 20px;
-        display : block;
-        margin: 10px auto;
-        background-color: #006F05;
-        color : white;
+        height: 40px;
+        padding: 1rem;
+        min-width: 150px;
+        font-size: 14px;
+        border-radius: 4px;
+        margin: 10px 1rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #006f05;
+        color: white;
         border: none;
-        width : 300px;
-        font-weight : bold;
+        width: 250px;
+        font-weight: bold;
       }
       ul {
         list-style-type: disc;
@@ -57,28 +108,47 @@
         margin: 15px 0;
         font-weight: 900;
       }
-      @media screen and (max-width : 468px) {
+      @media screen and (max-width: 468px) {
         h1 {
-          font-size : 50px
+          font-size: 50px;
         }
       }
     </style>
-	</head>
-	<body>
-		<div class="home-container">
-			<h1><i class="fa fa-user-secret"></i> AnonyChats</h1>
+  </head>
+  <body>
+    <div class="home-container">
+      <h1><i class="fa fa-user-secret"></i> AnonyChats</h1>
       <ul>
         <li>Schedule chat rooms on any topic of your choice.</li>
         <li>Share link to participants.</li>
         <li>Let everyone chat anonymously.</li>
         <li>Up to 50 people in a room.</li>
         <li>No login/sign up required.</li>
-        <li>100% anonymous. No data is collected. Messages are deleted once room closes.</li>
+        <li>
+          100% anonymous. No data is collected. Messages are deleted once room
+          closes.
+        </li>
         <li>Rooms are open to entry till one hour after start time.</li>
       </ul>
-      <a href="/join"class='homeBtn'>JOIN A ROOM</a>
-      <a href="/create"class='homeBtn'>CREATE A ROOM</a>
-		</div>
-		<p class='creator'>Built with &hearts; by <a target='_blank' rel="noreferrer noopener" href="https://twitter.com/olamideaboyeji">Olamide</a><br><br>Inspired by <a target='_blank' rel="noreferrer noopener" href="https://www.youtube.com/watch?v=jD7FnbI76Hg&t=8s">Brad Traversy's video</a></p>
-	</body>
+      <div class="btn-wrap">
+        <a href="/join" class="homeBtn">JOIN A ROOM</a>
+        <a href="/create" class="homeBtn">CREATE A ROOM</a>
+      </div>
+    </div>
+    <p class="creator">
+      Built with &hearts; by
+      <a
+        target="_blank"
+        rel="noreferrer noopener"
+        href="https://twitter.com/olamideaboyeji"
+        >Olamide</a
+      ><br /><br />Inspired by
+      <a
+        target="_blank"
+        rel="noreferrer noopener"
+        href="https://www.youtube.com/watch?v=jD7FnbI76Hg&t=8s"
+        >Brad Traversy's video</a
+      >
+    </p>
+  </body>
 </html>
